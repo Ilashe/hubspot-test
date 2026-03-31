@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f4f6f9;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 520px;
+      padding: 2.5rem;
+    }
+
+    .card h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 0.4rem;
+    }
+
+    .card p.subtitle {
+      color: #6b7280;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.4rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: #111827;
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    }
+
+    input.error, textarea.error {
+      border-color: #ef4444;
+    }
+
+    .error-msg {
+      font-size: 0.78rem;
+      color: #ef4444;
+      margin-top: 0.3rem;
+      display: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 0.75rem;
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 0.5rem;
+    }
+
+    button[type="submit"]:hover {
+      background: #4338ca;
+    }
+
+    button[type="submit"]:active {
+      transform: scale(0.98);
+    }
+
+    .success-banner {
+      display: none;
+      background: #ecfdf5;
+      border: 1.5px solid #6ee7b7;
+      color: #065f46;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .row {
+        grid-template-columns: 1fr;
+      }
+      .card {
+        padding: 1.75rem 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Contact Us</h1>
+    <p class="subtitle">Fill in the form below and we'll get back to you shortly.</p>
+
+    <div class="success-banner" id="successBanner">
+      Message sent successfully! We'll be in touch soon.
+    </div>
+
+    <form id="contactForm" novalidate>
+      <div class="row">
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" name="fullName" placeholder="Jane Doe" />
+          <span class="error-msg" id="fullNameErr">Please enter your full name.</span>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" placeholder="+1 555 000 0000" />
+          <span class="error-msg" id="phoneErr">Please enter a valid phone number.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="jane@example.com" />
+        <span class="error-msg" id="emailErr">Please enter a valid email address.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="How can we help you?"></textarea>
+        <span class="error-msg" id="messageErr">Please enter a message.</span>
+      </div>
+
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("contactForm");
+
+    function validate() {
+      let valid = true;
+
+      const fields = [
+        { id: "fullName",  errId: "fullNameErr", test: v => v.trim().length >= 2 },
+        { id: "phone",     errId: "phoneErr",    test: v => /^[\d\s\+\-\(\)]{7,20}$/.test(v.trim()) },
+        { id: "email",     errId: "emailErr",    test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+        { id: "message",   errId: "messageErr",  test: v => v.trim().length >= 5 },
+      ];
+
+      fields.forEach(({ id, errId, test }) => {
+        const input = document.getElementById(id);
+        const err   = document.getElementById(errId);
+        if (!test(input.value)) {
+          input.classList.add("error");
+          err.style.display = "block";
+          valid = false;
+        } else {
+          input.classList.remove("error");
+          err.style.display = "none";
+        }
+      });
+
+      return valid;
+    }
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      if (!validate()) return;
+
+      // Replace this block with your own submission logic (fetch, FormData, etc.)
+      document.getElementById("successBanner").style.display = "block";
+      form.reset();
+      setTimeout(() => {
+        document.getElementById("successBanner").style.display = "none";
+      }, 5000);
+    });
+  </script>
+</body>
+</html>
